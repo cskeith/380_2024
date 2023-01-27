@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <servlet>
+        <servlet-name>helloServlet</servlet-name>
+        <servlet-class>hkmu.comps380f.HelloServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>helloServlet</servlet-name>
+        <url-pattern>/greeting</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>emailServlet</servlet-name>
+        <servlet-class>hkmu.comps380f.EmailServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>emailServlet</servlet-name>
+        <url-pattern>/echoEmail</url-pattern>
+    </servlet-mapping>
+</web-app>
