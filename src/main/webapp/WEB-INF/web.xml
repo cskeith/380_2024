@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <servlet>
+        <servlet-name>helloJSP</servlet-name>
+        <jsp-file>/hello_page.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>helloJSP</servlet-name>
+        <url-pattern>/hello</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>helloServlet</servlet-name>
+        <servlet-class>hkmu.comps380f.HelloServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>helloServlet</servlet-name>
+        <url-pattern>/greeting</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>exprJSP</servlet-name>
+        <jsp-file>/jsp_expression.jsp</jsp-file>
+        <init-param>
+            <param-name>WebMaster</param-name>
+            <param-value>This is our servlet init parameter.</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>exprJSP</servlet-name>
+        <url-pattern>/expr</url-pattern>
+    </servlet-mapping>
+
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+            <scripting-invalid>false</scripting-invalid>
+            <trim-directive-whitespaces>false</trim-directive-whitespaces>
+            <default-content-type>text/html</default-content-type>
+        </jsp-property-group>
+    </jsp-config>
+</web-app>
