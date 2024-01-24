@@ -11,6 +11,7 @@
         <servlet-name>helloServlet</servlet-name>
         <url-pattern>/greeting</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>emailServlet</servlet-name>
         <servlet-class>hkmu.comps380f.EmailServlet</servlet-class>
