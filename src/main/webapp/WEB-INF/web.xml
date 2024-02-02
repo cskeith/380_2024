@@ -33,4 +33,13 @@
         <servlet-name>myServlet2</servlet-name>
         <url-pattern>/visit2</url-pattern>
     </servlet-mapping>
+
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+            <trim-directive-whitespaces>true</trim-directive-whitespaces>
+            <default-content-type>text/html</default-content-type>
+        </jsp-property-group>
+    </jsp-config>
 </web-app>
