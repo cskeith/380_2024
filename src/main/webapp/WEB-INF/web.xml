@@ -10,7 +10,7 @@
 
     <servlet>
         <servlet-name>myServlet1</servlet-name>
-        <servlet-class>hkmu.comps380f.VisitCounterServlet</servlet-class>
+        <jsp-file>/WEB-INF/jsp/visit.jsp</jsp-file>
         <init-param>
             <param-name>title</param-name>
             <param-value>Page for myServlet1</param-value>
@@ -23,7 +23,7 @@
 
     <servlet>
         <servlet-name>myServlet2</servlet-name>
-        <servlet-class>hkmu.comps380f.VisitCounterServlet</servlet-class>
+        <jsp-file>/WEB-INF/jsp/visit.jsp</jsp-file>
         <init-param>
             <param-name>title</param-name>
             <param-value>Page for myServlet2</param-value>
