@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<taglib xmlns="https://jakarta.ee/xml/ns/jakartaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-jsptaglibrary_3_1.xsd"
+        version="3.1">
+
+    <tlib-version>1.0</tlib-version>
+    <short-name>greet</short-name>
+    <!-- Ways of saying Hello. -->
+    <uri>comps380f.hkmu.edu/greetings/HelloTag</uri>
+    <tag>
+        <name>hello</name>
+        <tag-class>hkmu.comps380f.HelloTag</tag-class>
+        <body-content>empty</body-content>
+        <!-- Say hello. -->
+        <attribute>
+            <name>form</name>
+            <required>true</required>
+        </attribute>
+    </tag>
+</taglib>
