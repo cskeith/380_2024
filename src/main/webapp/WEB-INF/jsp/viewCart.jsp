@@ -5,6 +5,7 @@
     <title>View Cart</title>
 </head>
 <body>
+<a href="<c:url value="/shop?action=emptyCart" />">Empty Cart</a>
 <h1>View Cart</h1>
 <a href="<c:url value="/shop" />">Product List</a><br/><br/>
 <%
