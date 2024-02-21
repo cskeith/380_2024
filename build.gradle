@@ -11,18 +11,22 @@ repositories {
 }
 
 ext {
+  springVersion = '6.1.4'
   junitVersion = '5.10.0'
 }
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
+sourceCompatibility = '17'
+targetCompatibility = '17'
 
 tasks.withType(JavaCompile) {
   options.encoding = 'UTF-8'
 }
 
 dependencies {
-  compileOnly('jakarta.servlet:jakarta.servlet-api:6.0.0')
+  implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:3.0.0'
+  implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
+  implementation 'jakarta.el:jakarta.el-api:5.0.1'
+  implementation "org.springframework:spring-webmvc:${springVersion}"
 
   testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
