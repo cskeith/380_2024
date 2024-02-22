@@ -41,4 +41,18 @@ public class PageVisit implements Serializable {
     public void setIpAddress(InetAddress ipAddress) {
         this.ipAddress = ipAddress;
     }
+
+    public String getTimeString() {
+        if (this.leftTimestamp == null) {
+            return "";
+        }
+        long timeInterval = this.leftTimestamp - this.enteredTimestamp;
+        if (timeInterval < 1_000) {
+            return "less than one second";
+        }
+        if (timeInterval < 60_000) {
+            return (timeInterval / 1_000) + " seconds";
+        }
+        return "about " + (timeInterval / 60_000) + " minutes";
+    }
 }
