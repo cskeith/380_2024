@@ -19,7 +19,7 @@ public class GuestBookController {
 
     @GetMapping({"", "/"})
     public String index(ModelMap model) {
-        model.addAttribute("entries", gbeRepo.listEntries());
+        model.addAttribute("entries", gbeRepo.findAll());
         return "GuestBook";
     }
 
@@ -31,13 +31,13 @@ public class GuestBookController {
     @PostMapping("/add")
     public View addCommentHandle(@ModelAttribute("entry") GuestBookEntry gbEntry) {
         gbEntry.setDate(new Date());
-        gbeRepo.addEntry(gbEntry);
+        gbeRepo.save(gbEntry);
         return new RedirectView("."); // One way to redirect in Spring MVC
     }
 
     @GetMapping("/edit/{id}")
     public String editCommentForm(@PathVariable("id") long entryId, ModelMap model) {
-        GuestBookEntry entry = gbeRepo.getEntryById(entryId);
+        GuestBookEntry entry = gbeRepo.findById(entryId).orElse(null);
         if (entry == null) {
             return "redirect:/guestbook";
         }
@@ -49,18 +49,18 @@ public class GuestBookController {
     public String editCommentHandle(@PathVariable("id") long entryId, @ModelAttribute("entry") GuestBookEntry gbEntry) {
         if (gbEntry.getId() == entryId) {
             gbEntry.setDate(new Date());
-            gbeRepo.updateEntry(gbEntry);
+            gbeRepo.save(gbEntry);
         }
         return "redirect:.."; // Another way to redirect in Spring MVC
     }
 
     @GetMapping("/delete/{id}")
     public String deleteEntry(@PathVariable("id") long entryId) {
-        GuestBookEntry entry = gbeRepo.getEntryById(entryId);
+        GuestBookEntry entry = gbeRepo.findById(entryId).orElse(null);
         if (entry == null) {
             return "redirect:/guestbook";
         }
-        gbeRepo.removeEntryById(entryId);
+        gbeRepo.deleteById(entryId);
         return "redirect:/";
     }
 }
