@@ -1,15 +1,15 @@
 package hkmu.comps380f.controller;
 
+import hkmu.comps380f.dao.TicketService;
+import hkmu.comps380f.exception.AttachmentNotFound;
+import hkmu.comps380f.exception.TicketNotFound;
 import hkmu.comps380f.model.Attachment;
 import hkmu.comps380f.model.Ticket;
 import hkmu.comps380f.view.DownloadingView;
-import org.apache.commons.lang3.RandomStringUtils;
+import jakarta.annotation.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -17,19 +17,18 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/ticket")
 public class TicketController {
-    private volatile long TICKET_ID_SEQUENCE = 1;
-    private Map<Long, Ticket> ticketDatabase = new ConcurrentHashMap<>();
+    @Resource
+    private TicketService tService;
 
     // Controller methods, Form-backing object, ...
     @GetMapping(value = {"", "/list"})
     public String list(ModelMap model) {
-        model.addAttribute("ticketDatabase", ticketDatabase);
+        model.addAttribute("ticketDatabase", tService.getTickets());
         return "list";
     }
 
@@ -80,37 +79,16 @@ public class TicketController {
 
     @PostMapping("/create")
     public View create(Form form) throws IOException {
-        Ticket ticket = new Ticket();
-        ticket.setId(this.getNextTicketId());
-        ticket.setCustomerName(form.getCustomerName());
-        ticket.setSubject(form.getSubject());
-        ticket.setBody(form.getBody());
-
-        for (MultipartFile filePart : form.getAttachments()) {
-            Attachment attachment = new Attachment();
-            attachment.setId(RandomStringUtils.randomAlphanumeric(8));
-            attachment.setName(filePart.getOriginalFilename());
-            attachment.setMimeContentType(filePart.getContentType());
-            attachment.setContents(filePart.getBytes());
-            if (attachment.getName() != null && attachment.getName().length() > 0
-                    && attachment.getContents() != null && attachment.getContents().length > 0)
-                ticket.addAttachment(attachment);
-        }
-        this.ticketDatabase.put(ticket.getId(), ticket);
-        return new RedirectView("/ticket/view/" + ticket.getId(), true);
-    }
-
-    private synchronized long getNextTicketId() {
-        return this.TICKET_ID_SEQUENCE++;
+        long ticketId = tService.createTicket(form.getCustomerName(),
+                form.getSubject(), form.getBody(), form.getAttachments());
+        return new RedirectView("/ticket/view/" + ticketId, true);
     }
 
     @GetMapping("/view/{ticketId}")
     public String view(@PathVariable("ticketId") long ticketId,
-                       ModelMap model) {
-        Ticket ticket = this.ticketDatabase.get(ticketId);
-        if (ticket == null) {
-            return "redirect:/ticket/list";
-        }
+                       ModelMap model)
+            throws TicketNotFound {
+        Ticket ticket = tService.getTicket(ticketId);
         model.addAttribute("ticketId", ticketId);
         model.addAttribute("ticket", ticket);
         return "view";
@@ -118,14 +96,15 @@ public class TicketController {
 
     @GetMapping("/{ticketId}/attachment/{attachment:.+}")
     public View download(@PathVariable("ticketId") long ticketId,
-                         @PathVariable("attachment") String AttachmentId) {
-        Ticket ticket = this.ticketDatabase.get(ticketId);
-        if (ticket != null) {
-            Attachment attachment = ticket.getAttachment(AttachmentId);
-            if (attachment != null)
-                return new DownloadingView(attachment.getName(),
-                        attachment.getMimeContentType(), attachment.getContents());
-        }
-        return new RedirectView("/ticket/list", true);
+                         @PathVariable("attachment") UUID attachmentId)
+            throws TicketNotFound, AttachmentNotFound {
+        Attachment attachment = tService.getAttachment(ticketId, attachmentId);
+        return new DownloadingView(attachment.getName(),
+                attachment.getMimeContentType(), attachment.getContents());
+    }
+
+    @ExceptionHandler({TicketNotFound.class, AttachmentNotFound.class})
+    public ModelAndView error(Exception e) {
+        return new ModelAndView("error", "message", e.getMessage());
     }
 }

@@ -1,17 +1,30 @@
 package hkmu.comps380f.model;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
+
+@Entity
 public class Ticket {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(name = "name")
     private String customerName;
     private String subject;
     private String body;
-    private Map<String, Attachment> attachments = new ConcurrentHashMap<>();
 
-    // Getters and Setters of id, customerName, subject, body (not attachments)
+    @OneToMany(mappedBy = "ticket", fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<Attachment> attachments = new ArrayList<>();
+
+    // getters and setters of all properties
     public long getId() {
         return id;
     }
@@ -44,19 +57,16 @@ public class Ticket {
         this.body = body;
     }
 
-    public Attachment getAttachment(String name) {
-        return this.attachments.get(name);
+    public List<Attachment> getAttachments() {
+        return attachments;
     }
 
-    public Collection<Attachment> getAttachments() {
-        return this.attachments.values();
+    public void setAttachments(List<Attachment> attachments) {
+        this.attachments = attachments;
     }
 
-    public void addAttachment(Attachment attachment) {
-        this.attachments.put(attachment.getId(), attachment);
-    }
-
-    public int getNumberOfAttachments() {
-        return this.attachments.size();
+    public void deleteAttachment(Attachment attachment) {
+        attachment.setTicket(null);
+        this.attachments.remove(attachment);
     }
 }
