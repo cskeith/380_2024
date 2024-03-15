@@ -15,7 +15,8 @@
             Ticket ${entry.id}:
             <a href="<c:url value="/ticket/view/${entry.id}" />">
                 <c:out value="${entry.subject}"/></a>
-            (customer: <c:out value="${entry.customerName}"/>)<br />
+            (customer: <c:out value="${entry.customerName}"/>)
+            [<a href="<c:url value="/ticket/delete/${entry.id}" />">Delete</a>]<br />
         </c:forEach>
     </c:otherwise>
 </c:choose>

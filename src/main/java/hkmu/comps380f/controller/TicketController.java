@@ -103,6 +103,22 @@ public class TicketController {
                 attachment.getMimeContentType(), attachment.getContents());
     }
 
+    @GetMapping("/delete/{ticketId}")
+    public String deleteTicket(@PathVariable("ticketId") long ticketId)
+            throws TicketNotFound {
+        tService.delete(ticketId);
+        return "redirect:/ticket/list";
+    }
+
+    @GetMapping("/{ticketId}/delete/{attachment:.+}")
+    public String deleteAttachment(@PathVariable("ticketId") long ticketId,
+                                   @PathVariable("attachment") UUID attachmentId)
+            throws TicketNotFound, AttachmentNotFound {
+        tService.deleteAttachment(ticketId, attachmentId);
+        return "redirect:/ticket/view/" + ticketId;
+    }
+
+
     @ExceptionHandler({TicketNotFound.class, AttachmentNotFound.class})
     public ModelAndView error(Exception e) {
         return new ModelAndView("error", "message", e.getMessage());
