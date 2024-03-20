@@ -4,6 +4,12 @@
     <title>Guest Book</title>
 </head>
 <body>
+<c:url var="logoutUrl" value="/logout"/>
+<form action="${logoutUrl}" method="post">
+    <input type="submit" value="Log out" />
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+</form>
+
 <h1>Guest Book</h1>
 <c:if test="${fn:length(entries) == 0}">
     <p>There is no message yet.</p>
