@@ -10,4 +10,9 @@ public class IndexController {
     public String index() {
         return "redirect:/guestbook/";
     }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }

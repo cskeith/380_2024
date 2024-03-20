@@ -11,6 +11,12 @@
 </form>
 
 <h1>Guest Book</h1>
+
+<p>Hello <security:authentication property="principal.username" />!</p>
+<security:authorize access="isAuthenticated() and principal.username=='keith'">
+    <p>This paragraph can only be seen by keith</p>
+</security:authorize>
+
 <c:if test="${fn:length(entries) == 0}">
     <p>There is no message yet.</p>
 </c:if>
