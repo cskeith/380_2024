@@ -1,26 +1,27 @@
 package hkmu.comps380f.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    @Autowired
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user1 = User.withUsername("keith")
-                .password("{noop}keithpw").roles("ADMIN", "USER").build();
-        UserDetails user2 = User.withUsername("john")
-                .password("{noop}johnpw").roles("USER").build();
-        InMemoryUserDetailsManager userDetailsManager
-                = new InMemoryUserDetailsManager();
-        userDetailsManager.createUser(user1);
-        userDetailsManager.createUser(user2);
-        return userDetailsManager;
+    public UserDetailsService jdbcUserDetailsService(DataSource dataSource) {
+        String usersByUsernameQuery
+                = "SELECT username, password, true FROM users WHERE username=?";
+        String authsByUsernameQuery
+                = "SELECT username, role FROM user_roles WHERE username=?";
+        JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
+        users.setUsersByUsernameQuery(usersByUsernameQuery);
+        users.setAuthoritiesByUsernameQuery(authsByUsernameQuery);
+        return users;
     }
 }
