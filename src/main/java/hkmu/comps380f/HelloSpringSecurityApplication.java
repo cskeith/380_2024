@@ -13,10 +13,10 @@ import org.springframework.context.annotation.Bean;
 import java.util.Collections;
 
 @SpringBootApplication
-public class HelloSpringDataJPAApplication {
+public class HelloSpringSecurityApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(HelloSpringDataJPAApplication.class, args);
+        SpringApplication.run(HelloSpringSecurityApplication.class, args);
     }
 
     @Bean
