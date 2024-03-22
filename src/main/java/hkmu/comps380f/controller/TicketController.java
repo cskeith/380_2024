@@ -7,6 +7,7 @@ import hkmu.comps380f.model.Attachment;
 import hkmu.comps380f.model.Ticket;
 import hkmu.comps380f.view.DownloadingView;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -110,6 +111,39 @@ public class TicketController {
         return "redirect:/ticket/view/" + ticketId;
     }
 
+    @GetMapping("/edit/{ticketId}")
+    public ModelAndView showEdit(@PathVariable("ticketId") long ticketId,
+                                 Principal principal, HttpServletRequest request)
+            throws TicketNotFound {
+        Ticket ticket = tService.getTicket(ticketId);
+        if (ticket == null
+                || (!request.isUserInRole("ROLE_ADMIN")
+                && !principal.getName().equals(ticket.getCustomerName()))) {
+            return new ModelAndView(new RedirectView("/ticket/list", true));
+        }
+        ModelAndView modelAndView = new ModelAndView("edit");
+        modelAndView.addObject("ticket", ticket);
+        Form ticketForm = new Form();
+        ticketForm.setSubject(ticket.getSubject());
+        ticketForm.setBody(ticket.getBody());
+        modelAndView.addObject("ticketForm", ticketForm);
+        return modelAndView;
+    }
+
+    @PostMapping("/edit/{ticketId}")
+    public String edit(@PathVariable("ticketId") long ticketId, Form form,
+                       Principal principal, HttpServletRequest request)
+            throws IOException, TicketNotFound {
+        Ticket ticket = tService.getTicket(ticketId);
+        if (ticket == null
+                || (!request.isUserInRole("ROLE_ADMIN")
+                && !principal.getName().equals(ticket.getCustomerName()))) {
+            return "redirect:/ticket/list";
+        }
+        tService.updateTicket(ticketId, form.getSubject(),
+                form.getBody(), form.getAttachments());
+        return "redirect:/ticket/view/" + ticketId;
+    }
 
     @ExceptionHandler({TicketNotFound.class, AttachmentNotFound.class})
     public ModelAndView error(Exception e) {

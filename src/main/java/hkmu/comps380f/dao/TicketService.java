@@ -100,4 +100,29 @@ public class TicketService {
         Ticket savedTicket = tRepo.save(ticket);
         return savedTicket.getId();
     }
+
+    @Transactional(rollbackFor = TicketNotFound.class)
+    public void updateTicket(long id, String subject,
+                             String body, List<MultipartFile> attachments)
+            throws IOException, TicketNotFound {
+        Ticket updatedTicket = tRepo.findById(id).orElse(null);
+        if (updatedTicket == null) {
+            throw new TicketNotFound(id);
+        }
+        updatedTicket.setSubject(subject);
+        updatedTicket.setBody(body);
+        for (MultipartFile filePart : attachments) {
+            Attachment attachment = new Attachment();
+            attachment.setName(filePart.getOriginalFilename());
+            attachment.setMimeContentType(filePart.getContentType());
+            attachment.setContents(filePart.getBytes());
+            attachment.setTicket(updatedTicket);
+            if (attachment.getName() != null && attachment.getName().length() > 0
+                    && attachment.getContents() != null
+                    && attachment.getContents().length > 0) {
+                updatedTicket.getAttachments().add(attachment);
+            }
+        }
+        tRepo.save(updatedTicket);
+    }
 }

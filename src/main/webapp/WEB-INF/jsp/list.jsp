@@ -25,7 +25,14 @@
             <a href="<c:url value="/ticket/view/${entry.id}" />">
                 <c:out value="${entry.subject}"/></a>
             (customer: <c:out value="${entry.customerName}"/>)
-            [<a href="<c:url value="/ticket/delete/${entry.id}" />">Delete</a>]<br />
+            <security:authorize access="hasRole('ADMIN') or
+                                        principal.username=='${entry.customerName}'">
+                [<a href="<c:url value="/ticket/edit/${entry.id}" />">Edit</a>]
+            </security:authorize>
+            <security:authorize access="hasRole('ADMIN')">
+                [<a href="<c:url value="/ticket/delete/${entry.id}" />">Delete</a>]
+            </security:authorize>
+            <br />
         </c:forEach>
     </c:otherwise>
 </c:choose>
