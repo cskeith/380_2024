@@ -16,6 +16,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,20 +39,11 @@ public class TicketController {
     }
 
     public static class Form {
-        private String customerName;
         private String subject;
         private String body;
         private List<MultipartFile> attachments;
 
         // Getters and Setters of customerName, subject, body, attachments
-        public String getCustomerName() {
-            return customerName;
-        }
-
-        public void setCustomerName(String customerName) {
-            this.customerName = customerName;
-        }
-
         public String getSubject() {
             return subject;
         }
@@ -78,8 +70,8 @@ public class TicketController {
     }
 
     @PostMapping("/create")
-    public View create(Form form) throws IOException {
-        long ticketId = tService.createTicket(form.getCustomerName(),
+    public View create(Form form, Principal principal) throws IOException {
+        long ticketId = tService.createTicket(principal.getName(),
                 form.getSubject(), form.getBody(), form.getAttachments());
         return new RedirectView("/ticket/view/" + ticketId, true);
     }
